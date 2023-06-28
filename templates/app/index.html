@@ -3,22 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 <div>hello</div>
-<ul>
-    <div>
-        <li>
-            {% for i in req %}
-                {{ i.last_name }}
+{% block list_book %}{% endblock %}
+{% block book %}{% endblock %}
 
+
+{% block index %}
+<div class="container">
+    <div class="list-group">
+        <ol class="list-group list-group-numbered">
+            {% for i in books %}
+                {{ i.id }}
+                <li class="list-group-item list-group-item-action list-group-item-secondary">
+                    <a href="#">{{ i.title_name }}</a>
+
+                    {% for j in i.actors.all %}
+                        <a href="{% url 'get_list_books' j.id %}">
+                        {{ j }}
+                        {{ j.id }}
+                    {% endfor %}</a>
+
+                </li>
+
+            {% endfor %}
+        </ol>
     </div>
-<div>
-    {{ i.first_name }}
 </div>
-    </li>
+<br>
+<br>
+<br>
+<div class="container">
+    <div class="list-group">
+        <ol class="list-group list-group-numbered">
+            {% for i in books %}
+                {% if not i.Archived %}
+                    <li class="list-group-item list-group-item-action list-group-item-secondary">
+                        <a href="#">{{ i.title_name }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+<br>
+<br>
 
-</ul>
-{% endfor %}
+{% endblock %}
+
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </html>

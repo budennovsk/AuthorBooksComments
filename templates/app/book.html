@@ -1,0 +1,11 @@
+{% extends 'app/index.html' %}
+{% block index %}{% endblock %}
+
+{% block book %}
+
+
+    {% for book in books %}
+        {{ book.title_name }}
+    {% endfor %}
+
+{% endblock %}

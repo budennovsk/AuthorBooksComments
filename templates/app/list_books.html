@@ -1,0 +1,21 @@
+{% extends 'app/index.html' %}
+
+
+{% block list_book %}
+
+<div class="container">
+    <div class="list-group">
+        <ol class="list-group list-group-numbered">
+            {% for i in list_books %}
+              {% if not i.Archived %}
+                  {{ i.id }}
+                <li class="list-group-item list-group-item-action list-group-item-secondary">
+                    <a href="{% url 'get_book' i.id %}">{{ i.title_name }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+
+{% endblock %}

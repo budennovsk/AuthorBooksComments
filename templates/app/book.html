@@ -3,9 +3,45 @@
 
 {% block book %}
 
-
     {% for book in books %}
-        {{ book.title_name }}
-    {% endfor %}
+        <div class="container">
+        <h2>Удаление произведения</h2>
+            <ul class="list-group list-group-horizontal">
+                <li class="list-group-item list-group-item-action list-group-item-secondary">
+                    {{ book.title_name }}
+                </li>
+                <li class="list-group-item list-group-item-secondary">
+                    <form method="POST" action="{% url 'delete' book.id %}">
+                        {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
 
+        <br>
+        <br>
+
+        <form method="POST" action="{% url 'get_book' book.id %}">
+        {% csrf_token %}
+        <div class="container">
+        <h2>Редактирование произведения</h2>
+            <div class="row">
+                <div class="col-sm-10">
+                    {{ forms.title_name }}
+                </div>
+                <div class="col">
+                    <div class="form-check">
+
+                        {{ forms.Archived }}
+                        <label class="form-check-label" for="gridCheck">Check me out</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Sign in</button>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
 {% endblock %}

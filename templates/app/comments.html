@@ -1,0 +1,35 @@
+{% extends 'app/index.html' %}
+{% block index %}{% endblock %}
+
+{% block comment %}
+
+    <div class="container">
+    <h2>Редактирование и удаления комментариев</h2>
+    {% for i in comments %}
+        <div class="list-group">
+            <ol class="list-group list-group-horizontal">
+                <li class="list-group-item list-group-item-action list-group-item-secondary">
+                    {{ i.comment }}
+                </li>
+                <li class="list-group-item list-group-item-secondary">
+                    <form method="POST" action="{% url 'update_comments' i.id %}">
+                        {% csrf_token %}
+                        {{ form.comment }}
+                </li>
+                <li class="list-group-item list-group-item-secondary">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </li>
+
+                <li class="list-group-item list-group-item-secondary">
+                    <form method="POST" action="{% url 'get_comment' i.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </form>
+                </li>
+            </ol>
+        </div>
+    {% endfor %}
+
+{% endblock %}
+

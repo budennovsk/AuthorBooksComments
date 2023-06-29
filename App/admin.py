@@ -2,8 +2,10 @@ from django.contrib import admin
 from .models import Author, Books, Comments
 
 
+
 class AuthorAdmin(admin.ModelAdmin):
     list_display = '__all__'
+
 
 
 class BookAdmin(admin.ModelAdmin):

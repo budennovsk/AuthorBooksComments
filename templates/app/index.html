@@ -7,25 +7,72 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-<div>hello</div>
+<br>
+<br>
+
+<div class="container">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+            <p class="nav-link">
+          Текущий пользователь: "{{ user.username }}" </p>
+
+ <li class="nav-item">
+          <a class="nav-link" href="{% url 'loginup' %}">Зарегистрироваться</a>
+        </li>
+          <li class="nav-item">
+          <a class="nav-link" href="{% url 'inlogin' %}">Авторизоваться</a>
+        </li>
+        <li class="nav-item">
+          <a href="#" onclick="$('#signOutBtn').click()" class="nav-link">Выход</a>
+                        <form style='display: none;' method="POST" action="{% url 'logoutuser' %}">
+                            {% csrf_token %}
+                            <button id="signOutBtn" type="submit">Выход</button>
+                        </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+</div>
+
+
+
 {% block list_book %}{% endblock %}
 {% block book %}{% endblock %}
+{% block comment %}{% endblock %}
+{% block login %}{% endblock %}
+{% block inlogin %}{% endblock %}
+
 
 
 {% block index %}
+
 <div class="container">
+<h1>Список произведений и авторов книг</h1>
     <div class="list-group">
         <ol class="list-group list-group-numbered">
             {% for i in books %}
-                {{ i.id }}
                 <li class="list-group-item list-group-item-action list-group-item-secondary">
-                    <a href="#">{{ i.title_name }}</a>
+
+                    <a href="{% url 'get_comment' i.id %}">Произведение: "{{ i.title_name }}"</a>
+
 
                     {% for j in i.actors.all %}
                         <a href="{% url 'get_list_books' j.id %}">
-                        {{ j }}
-                        {{ j.id }}
-                    {% endfor %}</a>
+
+
+                        Автор произведения: "{{ j.first_name }}"
+
+                    {% endfor %}
+                    </a>
 
                 </li>
 
@@ -37,12 +84,13 @@
 <br>
 <br>
 <div class="container">
+<h2>Список произведений не заархивированных</h2>
     <div class="list-group">
         <ol class="list-group list-group-numbered">
             {% for i in books %}
                 {% if not i.Archived %}
                     <li class="list-group-item list-group-item-action list-group-item-secondary">
-                        <a href="#">{{ i.title_name }}</a>
+                        <a href="#">Произведение: "{{ i.title_name }}"</a>
                     </li>
                 {% endif %}
             {% endfor %}
@@ -51,11 +99,24 @@
 </div>
 <br>
 <br>
+    <form method="POST">
+     {% csrf_token %}
+    <div class="container">
+    <h1>Создание комментариев</h1>
+        <div class="list-group">
+        {% for i in comments %}
+        {{ i }}
+        {% endfor %}
+            <button type="submit" class="btn btn-primary">Create Comments</button>
 
+    </div>
+    </div>
+    </form>
 {% endblock %}
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 </html>

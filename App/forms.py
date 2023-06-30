@@ -1,13 +1,15 @@
 from django.forms import ModelForm
-from .models import Books, Comments
+from .models import Book, Comment
 
 
 class AppBookForm(ModelForm):
+    """ Создание формы"""
     class Meta:
-        model = Books
+        model = Book
         fields = ['title_name', 'Archived']
 
     def __init__(self, *args, **kwargs):
+        """ Изменение формы на стили будстрап"""
         super().__init__(*args, **kwargs)
 
         for field in iter(self.fields):
@@ -24,11 +26,13 @@ class AppBookForm(ModelForm):
 
 
 class CreateCommentForm(ModelForm):
+    """ Создание формы"""
     class Meta:
-        model = Comments
+        model = Comment
         fields = ['comment', 'comment_books', 'comment_author']
 
     def __init__(self, *args, **kwargs):
+        """ Изменение формы на стили будстрап"""
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
@@ -37,13 +41,17 @@ class CreateCommentForm(ModelForm):
 
 
 class UpdateCommentForm(ModelForm):
+    """ Создание формы"""
     class Meta:
-        model = Comments
+        model = Comment
         fields = ['comment']
 
     def __init__(self, *args, **kwargs):
+        """ Изменение формы на стили будстрап"""
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
-                'class': 'form-control'
+                'class': 'form-control',
+
+
             })

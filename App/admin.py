@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Author, Books, Comments
+from .models import Author, Book, Comment
 
 
 
@@ -17,6 +17,6 @@ class CommentsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Author)
-admin.site.register(Books)
-admin.site.register(Comments)
+admin.site.register(Book)
+admin.site.register(Comment)
 # Register your models here.

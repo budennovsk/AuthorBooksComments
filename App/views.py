@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Author, Books, Comments
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
+from .models import Author, Book, Comment
 from .forms import AppBookForm, CreateCommentForm, UpdateCommentForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
@@ -8,23 +8,18 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 
-# Create your views here.
-def all(request):
+
+def all(request: object) -> render:
+    """ Функция отображения рабочей страницы"""
     if request.user.is_anonymous is not True:
-
         if request.method == "GET":
-            # author = Author.objects.all()
-
-            books = Books.objects.filter(actors__user_id=request.user).prefetch_related('actors').all()
-            # comments = Comments.objects.select_related('comment_author_id').count()
+            books = Book.objects.filter(actors__user_id=request.user).prefetch_related('actors').all()
             context = {
-                # 'author': author,
                 'books': books,
                 'comments': CreateCommentForm
             }
             return render(request, 'app/index.html', context=context)
-
-        if request.method == 'POST':
+        elif request.method == 'POST':
             form = CreateCommentForm(request.POST)
             form.save()
             return redirect('all')
@@ -32,70 +27,58 @@ def all(request):
         return render(request, 'app/index.html')
 
 
-def get_list_books(request, author_id):
-    print(author_id)
-    # actors = Film.objects.filter(slug=film_slug).prefetch_related('actors')
-    # da = Books.objects.filter(id=4).prefetch_related('actors').all()
-    # for k in da:
-    #     print(k.actors__first_name,'ddd')
-    a = Books.objects.filter(actors__id=author_id).all()
-    print([i.title_name for i in a])
+def get_list_books(request: object, author_id: int) -> render:
+    """ Функция отображения списка книг автора"""
+    list_books = get_list_or_404(Book, actors__id=author_id)
+    return render(request, 'app/list_books.html', {'list_books': list_books})
 
-    fas = Books.objects.filter(pk=author_id).all()
-    for i in fas:
-        print(i.title_name)
-    # list_books = get_object_or_404(Books, pk=author_id)
-    return render(request, 'app/list_books.html', {'list_books': a})
-
-
-def get_book(request, book_id):
+@login_required
+def get_book(request: object, book_id: int) -> render:
+    """ Функция отображения книги автора"""
     if request.method == 'GET':
-        print(book_id)
-        books = Books.objects.filter(pk=book_id).all()
-        print(books)
+        books = get_list_or_404(Book, pk=book_id)
         forms = AppBookForm()
         return render(request, 'app/book.html', {'books': books, 'forms': forms})
-
     if request.method == 'POST':
-        ls = Books.objects.filter(pk=book_id, actors__user_id=request.user).all()
-
-        for i in ls:
-            i.title_name = request.POST['title_name']
-            i.Archived = request.POST.get('Archived', False)
-            i.save()
-
+        update_books = get_list_or_404(Book, pk=book_id, actors__user_id=request.user)
+        for items in update_books:
+            items.title_name = request.POST['title_name']
+            items.Archived = request.POST.get('Archived', False)
+            items.save()
         return redirect('all')
 
-
-def delete(request, book_id_delete):
+@login_required
+def delete(request: object, book_id_delete: int) -> render:
+    """ Функция удаления книги автора"""
+    delete_book = get_object_or_404(Book, pk=book_id_delete, actors__user_id=request.user)
     if request.method == 'POST':
-        books = Books.objects.filter(pk=book_id_delete, actors__user_id=request.user)
-        books.delete()
+        delete_book.delete()
         return redirect('all')
 
-
-def get_comment(request, comment_id):
+@login_required
+def get_comment(request: object, comment_id: int) -> render:
+    """ Функция отображения списка комментариев автора"""
     if request.method == "GET":
-        comments = Comments.objects.filter(comment_books__id=comment_id, comment_author__user=request.user).all()
+        comments = get_list_or_404(Comment, comment_books__id=comment_id, comment_author__user=request.user)
         return render(request, 'app/comments.html', {'comments': comments, 'form': UpdateCommentForm()})
-
     if request.method == 'POST':
-        delete_comment = Comments.objects.filter(pk=comment_id, comment_author__user_id=request.user)
+        delete_comment = get_object_or_404(Comment, pk=comment_id, comment_author__user_id=request.user)
         delete_comment.delete()
         return redirect('all')
 
-
-def update_comments(request, comment_id):
+@login_required
+def update_comments(request: object, comment_id: int) -> render:
+    """ Функция изменения комментариев автора"""
     if request.method == 'POST':
-        update = Comments.objects.filter(pk=comment_id, comment_author__user=request.user).all()
-        for i in update:
-            i.comment = request.POST['comment']
-            i.save()
+        update_com = get_list_or_404(Comment, pk=comment_id, comment_author__user=request.user)
+        for items in update_com:
+            items.comment = request.POST['comment']
+            items.save()
         return redirect('all')
 
 
-def loginup(request):
-    print('ddd')
+def loginup(request: object) -> render:
+    """ Функция регистрации автора"""
     if request.method == 'GET':
         return render(request, 'app/login.html', {'form': UserCreationForm()})
     else:
@@ -116,14 +99,14 @@ def loginup(request):
 
 @login_required
 def logoutuser(request: object) -> render:
-    """ Выход из органайзера"""
+    """ Выход из профиля"""
     if request.method == 'POST':
         logout(request)
         return redirect('all')
 
 
 def inlogin(request: object) -> render:
-    """ Авторизация пользователя в органайзер """
+    """ Авторизация пользователя """
     if request.method == 'GET':
         return render(request, 'app/inlogin.html', {'form': AuthenticationForm()})
     else:

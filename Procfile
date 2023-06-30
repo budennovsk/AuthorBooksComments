@@ -1,0 +1,1 @@
+web: gunicorn AuthorBooksComments.wsgi --log-file -

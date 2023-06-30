@@ -7,10 +7,10 @@
 <h2>Список произведений автора </h2>
     <div class="list-group">
         <ol class="list-group list-group-numbered">
-            {% for i in list_books %}
-              {% if not i.Archived %}
+            {% for items_books in list_books %}
+              {% if not items_books.Archived %}
                 <li class="list-group-item list-group-item-action list-group-item-secondary">
-                    <a href="{% url 'get_book' i.id %}">{{ i.title_name }}</a>
+                    <a href="{% url 'get_book' items_books.id %}">{{ items_books.title_name }}</a>
                 </li>
                 {% endif %}
             {% endfor %}

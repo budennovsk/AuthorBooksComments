@@ -26,7 +26,7 @@ urlpatterns = [
     path("loginup", views.loginup, name='loginup'),
     path("inlogin", views.inlogin, name='inlogin'),
     path("logoutuser", views.logoutuser, name='logoutuser'),
-    # Методы CRUD
+    # Методы CRUD остальные
     path("<int:author_id>", views.get_list_books, name='get_list_books'),
     path("<int:book_id>/", views.get_book, name='get_book'),
     path("<int:book_id_delete>/delete", views.delete, name='delete'),
